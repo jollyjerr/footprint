@@ -4,13 +4,13 @@
 const {BotHelper} = require('./botHelper')
 
 class Footprint extends BotHelper {
-    constructor() {
-        super();
-        this.onMessage(async (context, next) => {
-            await context.sendActivity(`You said '${ context.activity.text }'`);
-            // By calling next() you ensure that the next BotHandler is run.
-            await next();
-        });
+    constructor(conversationState, userState, dialog) {
+        super(conversationState, userState, dialog);
+        // this.onMessage(async (context, next) => {
+        //     await context.sendActivity(`You said '${ context.activity.text }'`);
+        //     // By calling next() you ensure that the next BotHandler is run.
+        //     await next();
+        // });
 
         this.onMembersAdded(async (context, next) => {
             const membersAdded = context.activity.membersAdded;

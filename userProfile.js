@@ -1,7 +1,6 @@
 class UserProfile {
     constructor(name) {
         this.name = name;
-
     }
 }
 
