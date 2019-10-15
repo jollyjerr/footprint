@@ -20,8 +20,7 @@ dotenv.config({ path: ENV_FILE });
 // Create HTTP server
 const server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || 3978, () => {
-    console.log(`\n${ server.name } listening to ${ server.url }`);
-    console.log('footprint says hi 👋')
+    console.log(`footprint says hi 👋 on ${server.url}`);
 });
 
 // Create adapter.

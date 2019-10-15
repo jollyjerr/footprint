@@ -12,9 +12,9 @@ class BotHelper extends ActivityHandler {
      */
     constructor(conversationState, userState, dialog) {
         super();
-        if (!conversationState) throw new Error('[DialogBot]: Missing parameter. conversationState is required');
-        if (!userState) throw new Error('[DialogBot]: Missing parameter. userState is required');
-        if (!dialog) throw new Error('[DialogBot]: Missing parameter. dialog is required');
+        if (!conversationState) throw new Error('[BotHelper]: Missing parameter. conversationState is required');
+        if (!userState) throw new Error('[BotHelper]: Missing parameter. userState is required');
+        if (!dialog) throw new Error('[BotHelper]: Missing parameter. dialog is required');
 
         this.conversationState = conversationState;
         this.userState = userState;
