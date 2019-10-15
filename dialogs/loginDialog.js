@@ -11,8 +11,8 @@ const AUTH_URL = 'http://localhost:5000/api/auth/login'
 class LoginDialog extends ComponentDialog {
     constructor() {
         super(LOGIN_DIALOG)
-        this.addDialog(new TextPrompt(TEXT_PROMPT))
 
+        this.addDialog(new TextPrompt(TEXT_PROMPT))
         this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
             this.nameStep.bind(this),
             this.passwordStep.bind(this),
@@ -55,8 +55,9 @@ class LoginDialog extends ComponentDialog {
             })
         })
         .then(resp => resp.json())
-        .then(() => {
-            stepContext.context.sendActivity(`LOGIN WORKED OMG`)
+        .then((result) => {
+            userProfile.tokenString = result.tokenString
+            console.log('A user just logged in! 🥳   ', userProfile.name)
             return stepContext.endDialog(userProfile);  
         })  
         .catch(err => console.error('Login Failed! 😮', err))

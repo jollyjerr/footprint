@@ -20,7 +20,7 @@ dotenv.config({ path: ENV_FILE });
 // Create HTTP server
 const server = restify.createServer();
 server.listen(process.env.port || process.env.PORT || 3978, () => {
-    console.log(`footprint says hi 👋 on ${server.url}`);
+    console.log(` 🦶  footprint says hi 👋 on ${server.url}`);
 });
 
 // Create adapter.
@@ -47,7 +47,7 @@ adapter.onTurnError = async (context, error) => {
     // This check writes out errors to console log .vs. app insights.
     console.error(`\n [onTurnError]: ${ error }`);
     // Send a message to the user
-    await context.sendActivity(`Oops. Something went wrong!`);
+    await context.sendActivity(`Oops. Something went wrong! Footprint has crashed!`);
     // Clear out state
     await conversationState.clear(context);
 };
