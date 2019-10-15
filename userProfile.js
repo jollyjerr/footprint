@@ -1,6 +1,7 @@
 class UserProfile {
-    constructor(name) {
-        this.name = name;
+    constructor(tokenString, name) {
+        this.tokenString = tokenString
+        this.name = name
     }
 }
 
