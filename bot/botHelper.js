@@ -22,8 +22,6 @@ class BotHelper extends ActivityHandler {
         this.dialogState = this.conversationState.createProperty('DialogState');
 
         this.onMessage(async (context, next) => {
-            // console.log('A conversation session has been initiated! 😮');
-
             // Run the Dialog with the new message Activity.
             await this.dialog.run(context, this.dialogState);
 

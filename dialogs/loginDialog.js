@@ -32,7 +32,7 @@ class LoginDialog extends ComponentDialog {
 
     async passwordStep(stepContext) {
         stepContext.values.userInfo.name = stepContext.result
-        await stepContext.context.sendActivity(`Hey there ${stepContext.values.userInfo.name}`)
+        await stepContext.context.sendActivity(`Hey there ${stepContext.values.userInfo.name}!`)
 
         let promptOptions = { prompt: 'What\'s your password?' }
 
@@ -61,7 +61,6 @@ class LoginDialog extends ComponentDialog {
         })  
         .catch(err => console.error('Login Failed! 😮', err))
     }
-
 }
 
 module.exports.LoginDialog = LoginDialog;

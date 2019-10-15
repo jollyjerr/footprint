@@ -1,10 +1,12 @@
-const { ComponentDialog, DialogSet, DialogTurnStatus, WaterfallDialog } = require('botbuilder-dialogs');
+const { ComponentDialog, DialogSet, DialogTurnStatus, TextPrompt, WaterfallDialog } = require('botbuilder-dialogs');
 
 const { LoginDialog, LOGIN_DIALOG } = require('./loginDialog');
 
 const MAIN_DIALOG = 'MAIN_DIALOG';
 const WATERFALL_DIALOG = 'WATERFALL_DIALOG';
 const USER_PROFILE_PROPERTY = 'USER_PROFILE_PROPERTY';
+
+const TEXT_PROMPT = 'TEXT_PROMPT'
 
 class MainDialog extends ComponentDialog {
     constructor(userState) {
@@ -13,8 +15,10 @@ class MainDialog extends ComponentDialog {
         this.userProfileAccessor = userState.createProperty(USER_PROFILE_PROPERTY);
 
         this.addDialog(new LoginDialog());
+        this.addDialog(new TextPrompt(TEXT_PROMPT))
         this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
             this.initialStep.bind(this),
+            this.clarifyLogin.bind(this),
             this.finalStep.bind(this)
         ]));
 
@@ -39,7 +43,15 @@ class MainDialog extends ComponentDialog {
     }
 
     async initialStep(stepContext) {
-        return await stepContext.beginDialog(LOGIN_DIALOG);
+        let promptOptions = { prompt: 'Would you like to log in?' }
+        return await stepContext.prompt(TEXT_PROMPT, promptOptions)
+    }
+
+    async clarifyLogin(stepContext) {
+        const confirmations = ['yes', 'ya', 'login', 'do', 'ok', 'okay', 'yep', 'yesh']
+        if (confirmations.some(resp => resp.includes(stepContext.result.toLowerCase()))) {
+            return await stepContext.beginDialog(LOGIN_DIALOG);
+        }
     }
 
     async finalStep(stepContext) {
