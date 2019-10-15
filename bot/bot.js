@@ -1,12 +1,11 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-const { ActivityHandler } = require('botbuilder');
+const {BotHelper} = require('./botHelper')
 
-class MyBot extends ActivityHandler {
+class Footprint extends BotHelper {
     constructor() {
         super();
-        // See https://aka.ms/about-bot-activity-message to learn more about the message and other activity types.
         this.onMessage(async (context, next) => {
             await context.sendActivity(`You said '${ context.activity.text }'`);
             // By calling next() you ensure that the next BotHandler is run.
@@ -26,4 +25,4 @@ class MyBot extends ActivityHandler {
     }
 }
 
-module.exports.MyBot = MyBot;
+module.exports.Footprint = Footprint;

@@ -7,10 +7,11 @@ const restify = require('restify');
 
 // Import required bot services.
 // See https://aka.ms/bot-services to learn more about the different parts of a bot.
-const { BotFrameworkAdapter } = require('botbuilder');
+const { BotFrameworkAdapter, MemoryStorage, UserState, ConversationState } = require('botbuilder');
 
 // This bot's main dialog.
-const { MyBot } = require('./bot');
+const { Footprint } = require('./bot/bot');
+const { MainDialog } = require('./dialogs/mainDialog');
 
 // Import required bot configuration.
 const ENV_FILE = path.join(__dirname, '.env');
@@ -30,21 +31,32 @@ const adapter = new BotFrameworkAdapter({
     appPassword: process.env.MicrosoftAppPassword
 });
 
+// Define state store for your bot.
+// See https://aka.ms/about-bot-state to learn more about bot state.
+const memoryStorage = new MemoryStorage();
+
+// Create user and conversation state with in-memory storage provider.
+const userState = new UserState(memoryStorage);
+const conversationState = new ConversationState(memoryStorage);
+
+// Create the main dialog.
+const dialog = new MainDialog(userState);
+const bot = new Footprint(conversationState, userState, dialog);
+
 // Catch-all for errors.
 adapter.onTurnError = async (context, error) => {
     // This check writes out errors to console log .vs. app insights.
     console.error(`\n [onTurnError]: ${ error }`);
     // Send a message to the user
     await context.sendActivity(`Oops. Something went wrong!`);
+    // Clear out state
+    await conversationState.clear(context);
 };
-
-// Create the main dialog.
-const myBot = new MyBot();
 
 // Listen for incoming requests.
 server.post('/api/messages', (req, res) => {
     adapter.processActivity(req, res, async (context) => {
         // Route to main dialog.
-        await myBot.run(context);
+        await bot.run(context);
     });
 });
