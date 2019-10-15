@@ -12,7 +12,8 @@ class TopLevelDialog extends ComponentDialog {
         this.addDialog(new TextPrompt(TEXT_PROMPT))
 
         this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
-            this.nameStep.bind(this)
+            this.nameStep.bind(this),
+            this.acknowledgementStep.bind(this)
         ]))
 
         this.initialDialogId = WATERFALL_DIALOG;
@@ -23,9 +24,15 @@ class TopLevelDialog extends ComponentDialog {
 
         const promptOptions = {prompt: 'Hey, I hope we make it here! Can you please enter your name??'}
 
-        await stepContext.prompt(TEXT_PROMPT, promptOptions)
+        return await stepContext.prompt(TEXT_PROMPT, promptOptions)
+    }
 
+    async acknowledgementStep(stepContext) {
         stepContext.values.userInfo.name = stepContext.result
+
+        await stepContext.context.sendActivity(`Hey there ${stepContext.values.userInfo.name}`)
+
+        return await stepContext.endDialog();
     }
 
 }

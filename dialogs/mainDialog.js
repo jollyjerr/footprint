@@ -45,9 +45,7 @@ class MainDialog extends ComponentDialog {
     async finalStep(stepContext) {
         const userInfo = stepContext.result;
 
-        const status = 'You are signed up to review ' +
-            (userInfo.companiesToReview.length === 0 ? 'no companies' : userInfo.companiesToReview.join(' and ')) + '.';
-        await stepContext.context.sendActivity(status);
+        await stepContext.context.sendActivity(`See ya! This has been a great talk!`);
         await this.userProfileAccessor.set(stepContext.context, userInfo);
         return await stepContext.endDialog();
     }
