@@ -21,13 +21,14 @@ class BotHelper extends ActivityHandler {
         this.dialog = dialog;
         this.dialogState = this.conversationState.createProperty('DialogState');
 
-        this.onMessage(async (context, next) => {
-            // Run the Dialog with the new message Activity.
-            await this.dialog.run(context, this.dialogState);
+        // this.onMessage(async (context, next) => {
+        //     // Run the Dialog with the new message Activity.
+        //     await this.dialog.run(context, this.dialogState);
 
-            // By calling next() you ensure that the next BotHandler is run.
-            await next();
-        });
+        //     // By calling next() you ensure that the next BotHandler is run.
+        //     await next();
+        // });
+
 
         this.onDialog(async (context, next) => {
             // Save any state changes. The load happened during the execution of the Dialog.

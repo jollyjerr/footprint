@@ -44,7 +44,7 @@ class MainDialog extends ComponentDialog {
 
         const dialogContext = await dialogSet.createContext(turnContext);
         const results = await dialogContext.continueDialog();
-        if (results.status === DialogTurnStatus.empty) {
+        if (results.status === undefined || results.status === DialogTurnStatus.empty) {
             await dialogContext.beginDialog(this.id);
         }
     }
@@ -66,7 +66,7 @@ class MainDialog extends ComponentDialog {
     async secondStep(stepContext) {
         userInfo = stepContext.result //store logged in user in global scope for future use
         console.log('logged In User', userInfo)
-        let promptOptions = { prompt: 'Awesome! What questions do you have for me?' }
+        let promptOptions = { prompt: 'Awesome! What do you want to talk about?' }
         return await stepContext.prompt(TEXT_PROMPT, promptOptions)
     }
 
@@ -74,8 +74,10 @@ class MainDialog extends ComponentDialog {
         switch(stepContext.result){
             case 'recycling':
                 return await stepContext.beginDialog(RECYCLE_DIALOG)
-            default:
+            case 'goodbye!':
                 return await stepContext.next()
+            default:
+                // return await stepContext.beginDialog(QNA_DIALOG)
         }
     }
 
