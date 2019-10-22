@@ -56,7 +56,9 @@ class LoginDialog extends ComponentDialog {
         })
         .then(resp => resp.json())
         .then((result) => {
-            userProfile.tokenString = result.tokenString
+            userProfile.jwt = result.footprintsJWT
+            userProfile.vehicles = result.user.vehicles
+            userProfile.houses = result.user.houses
             console.log('A user just logged in! 🥳   ', userProfile.name)
             return stepContext.endDialog(userProfile);  
         })  

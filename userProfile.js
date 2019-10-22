@@ -1,7 +1,9 @@
 class UserProfile {
-    constructor(tokenString, name) {
-        this.tokenString = tokenString
+    constructor(jwt, name, vehicles, houses) {
+        this.jwt = jwt
         this.name = name
+        this.vehicles = vehicles,
+        this.houses = houses
     }
 }
 

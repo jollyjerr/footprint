@@ -50,7 +50,7 @@ class MainDialog extends ComponentDialog {
     }
 
     async initialStep(stepContext) {
-        let promptOptions = { prompt: 'Would you like to log in?' }
+        let promptOptions = { prompt: 'Ahoy! My name is Footprint, and I am here to help you make sustainable decisions. Would you like to log in?' }
         return await stepContext.prompt(TEXT_PROMPT, promptOptions)
     }
 
@@ -65,7 +65,7 @@ class MainDialog extends ComponentDialog {
 
     async secondStep(stepContext) {
         userInfo = stepContext.result //store logged in user in global scope for future use
-
+        console.log('logged In User', userInfo)
         let promptOptions = { prompt: 'Awesome! What questions do you have for me?' }
         return await stepContext.prompt(TEXT_PROMPT, promptOptions)
     }
