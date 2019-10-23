@@ -63,9 +63,8 @@ class MainDialog extends ComponentDialog {
     }
 
     async finalStep(stepContext) {
-        await stepContext.context.sendActivity(`See ya! This has been a great talk, ${userInfo.name}!`);
         await this.userProfileAccessor.set(stepContext.context, userInfo);
-        return await stepContext.endDialog();
+        throw `Always love talking to ya, ${userInfo.name}!`;
     }
 }
 
