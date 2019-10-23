@@ -31,6 +31,7 @@ class Footprint extends BotHelper {
             for (let cnt = 0; cnt < membersAdded.length; ++cnt) {
                 if (membersAdded[cnt].id !== context.activity.recipient.id) {
                     console.log('A new member has been added! ☺️')
+                    await context.sendActivity("Ahoy! My name is Footprint, and I am here to help you make sustainable decisions. Click 'Login', or ask me questions!");
                     await context.sendActivity(tasks)
                 }
             }
