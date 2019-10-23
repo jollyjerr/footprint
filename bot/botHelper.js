@@ -4,12 +4,6 @@
 const { ActivityHandler } = require('botbuilder');
 
 class BotHelper extends ActivityHandler {
-    /**
-     *
-     * @param {ConversationState} conversationState
-     * @param {UserState} userState
-     * @param {Dialog} dialog
-     */
     constructor(conversationState, userState, dialog) {
         super();
         if (!conversationState) throw new Error('[BotHelper]: Missing parameter. conversationState is required');
@@ -20,15 +14,6 @@ class BotHelper extends ActivityHandler {
         this.userState = userState;
         this.dialog = dialog;
         this.dialogState = this.conversationState.createProperty('DialogState');
-
-        // this.onMessage(async (context, next) => {
-        //     // Run the Dialog with the new message Activity.
-        //     await this.dialog.run(context, this.dialogState);
-
-        //     // By calling next() you ensure that the next BotHandler is run.
-        //     await next();
-        // });
-
 
         this.onDialog(async (context, next) => {
             // Save any state changes. The load happened during the execution of the Dialog.

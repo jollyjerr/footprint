@@ -74,10 +74,8 @@ class MainDialog extends ComponentDialog {
         switch(stepContext.result){
             case 'recycling':
                 return await stepContext.beginDialog(RECYCLE_DIALOG)
-            case 'goodbye!':
-                return await stepContext.next()
             default:
-                // return await stepContext.beginDialog(QNA_DIALOG)
+                return await stepContext.next()
         }
     }
 

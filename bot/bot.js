@@ -3,6 +3,7 @@
 
 const {BotHelper} = require('./botHelper');
 const { QnAMaker } = require("botbuilder-ai");
+const { MessageFactory } = require("botbuilder");
 
 const dotenv = require("dotenv");
 dotenv.config();
@@ -10,6 +11,7 @@ dotenv.config();
 class Footprint extends BotHelper {
     constructor(conversationState, userState, dialog) {
         super(conversationState, userState, dialog);
+        let waterfall = false;
         try {
           this.qnaMaker = new QnAMaker({
             knowledgeBaseId: process.env.QnAKnowledgebaseId,
@@ -24,48 +26,43 @@ class Footprint extends BotHelper {
 
         this.onMembersAdded(async (context, next) => {
             console.log('A new member has been added! ☺️')
-
+            let tasks = MessageFactory.suggestedActions(['Login'])
             const membersAdded = context.activity.membersAdded;
             for (let cnt = 0; cnt < membersAdded.length; ++cnt) {
                 if (membersAdded[cnt].id !== context.activity.recipient.id) {
                     console.log('A new member has been added! ☺️')
+                    await context.sendActivity(tasks)
                 }
             }
-
-            // By calling next() you ensure that the next BotHandler is run.
             await next();
         });
 
         this.onMessage(async (context, next) => {
-          if (
-            !process.env.QnAKnowledgebaseId ||
-            !process.env.QnAAuthKey ||
-            !process.env.QnAEndpointHostName
-          ) {
-            let unconfiguredQnaMessage =
-              "NOTE: \r\n" +
-              "QnA Maker is not configured. To enable all capabilities, add `QnAKnowledgebaseId`, `QnAEndpointKey` and `QnAEndpointHostName` to the .env file. \r\n" +
-              "You may visit www.qnamaker.ai to create a QnA Maker knowledge base.";
-
-            await context.sendActivity(unconfiguredQnaMessage);
+          if(context.activity.text === 'Login' || waterfall === true){
+            waterfall = true
+            await this.dialog.run(context, this.dialogState)
           } else {
-            console.log("Calling QnA Maker");
-
-            const qnaResults = await this.qnaMaker.getAnswers(context);
-
-            // If an answer was received from QnA Maker, send the answer back to the user.
-            if (qnaResults[0]) {
-              await context.sendActivity(qnaResults[0].answer);
-
-              // If no answers were returned from QnA Maker, reply with help.
+            if (
+              !process.env.QnAKnowledgebaseId ||
+              !process.env.QnAAuthKey ||
+              !process.env.QnAEndpointHostName
+            ) {
+              let unconfiguredQnaMessage = "Sorry, but footprint is feeling ill right now. Check back later!"
+              await context.sendActivity(unconfiguredQnaMessage);
             } else {
-              await context.sendActivity("No QnA Maker answers were found.");
+              console.log("Calling QnA Maker 💸 ");
+              const qnaResults = await this.qnaMaker.getAnswers(context);
+              if (qnaResults[0]) {
+                await context.sendActivity(qnaResults[0].answer);
+              } else {
+                await context.sendActivity("Hmmm... I'm puzzled. Let me get back to you on that.");
+              }
             }
           }
-
-          // By calling next() you ensure that the next BotHandler is run.
+          
           await next();
         });
+
     }
 }
 
