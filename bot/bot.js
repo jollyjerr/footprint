@@ -31,7 +31,7 @@ class Footprint extends BotHelper {
             for (let cnt = 0; cnt < membersAdded.length; ++cnt) {
                 if (membersAdded[cnt].id !== context.activity.recipient.id) {
                     console.log('A new member has been added! ☺️')
-                    await context.sendActivity("Ahoy! My name is Footprint, and I am here to help you make sustainable decisions. Click 'Login', or ask me questions!");
+                    await context.sendActivity("Ahoy! My name is footprint, and I am here to help you make sustainable decisions. We can chat here, or say 'Login' at any time to access your account!");
                     await context.sendActivity(tasks)
                 }
             }
@@ -39,9 +39,14 @@ class Footprint extends BotHelper {
         });
 
         this.onMessage(async (context, next) => {
-          if(context.activity.text === 'Login' || waterfall === true){
-            waterfall = true
-            await this.dialog.run(context, this.dialogState)
+          if(context.activity.text === 'Login' || context.activity.text === 'login' || waterfall === true){
+            try {
+              waterfall = true
+              await this.dialog.run(context, this.dialogState)
+            } catch (err) {
+              waterfall = false
+              await context.sendActivity(err)
+            }
           } else {
             if (
               !process.env.QnAKnowledgebaseId ||

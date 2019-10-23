@@ -22,7 +22,6 @@ class MainDialog extends ComponentDialog {
         this.addDialog(new TextPrompt(TEXT_PROMPT))
 
         this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
-            this.initialStep.bind(this),
             this.clarifyLogin.bind(this),
             this.secondStep.bind(this),
             this.clarifyProblem.bind(this),
@@ -43,18 +42,8 @@ class MainDialog extends ComponentDialog {
         }
     }
 
-    async initialStep(stepContext) {
-        let promptOptions = { prompt: 'Ahoy! My name is Footprint, and I am here to help you make sustainable decisions. Would you like to log in?' }
-        return await stepContext.prompt(TEXT_PROMPT, promptOptions)
-    }
-
     async clarifyLogin(stepContext) {
-        const confirmations = ['yes', 'ya', 'login', 'do', 'ok', 'okay', 'yep', 'yesh']
-        if (confirmations.some(resp => resp.includes(stepContext.result.toLowerCase()))) {
-            return await stepContext.beginDialog(LOGIN_DIALOG);
-        } else {
-            return await stepContext.next()
-        }
+        return await stepContext.beginDialog(LOGIN_DIALOG);
     }
 
     async secondStep(stepContext) {
