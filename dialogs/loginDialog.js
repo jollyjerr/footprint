@@ -57,7 +57,7 @@ class LoginDialog extends ComponentDialog {
         .then(resp => resp.json())
         .catch(err => {
             console.error('Login Failed! 😮', err)
-            throw `Oh no ${userProfile.name}! It looks like your username or password was incorrect!`
+            throw `Sorry ${userProfile.name}! It looks like your username or password was incorrect!`
         })
         .then((result) => {
             userProfile.jwt = result.footprintsJWT
