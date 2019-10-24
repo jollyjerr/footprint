@@ -59,14 +59,34 @@ class MainDialog extends ComponentDialog {
 
   async clarifyProblem(stepContext) {
     switch (this.findInput(stepContext.result)) {
-      case "house":
-        return await stepContext.beginDialog(RECYCLE_DIALOG);
-      default:
+        case 'profile':
+            return await stepContext.next() // WIP:
+        case 'vehicle':
+            return await stepContext.prompt(TEXT_PROMPT, { prompt: `Your vehicle(s) on record: ${this.mapVehicles()}! Take the ${this.findBestVehicle().make} for minimum impact!` })
+        case 'house':
+            return await stepContext.next() // WIP:
+        default:
         return await stepContext.next();
     }
   }
 
-  async findInput(rawInput) {
+  findBestVehicle() {
+      let best = {mpg: 0}
+      userInfo.vehicles.map(v => {
+        v.mpg > best.mpg ? best = v : null
+      })
+      return best
+  }
+
+  mapVehicles() {
+      let vehicles = ''
+      userInfo.vehicles.map(v => {
+        vehicles = vehicles + `${v.make} ${v.model} with ${v.mpg}mpg `
+      })
+      return vehicles
+  }
+
+  findInput(rawInput) {
     let profileBuzz = ["profile", "all", "own", "user", "file"];
     let vehicleBuzz = ["vehicle", "car", "vehicles", "cars", "trucks", "drive"];
     let houseBuzz = ["house", "houses", "buildings", "live", "visit"];
