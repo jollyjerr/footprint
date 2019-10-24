@@ -6,7 +6,7 @@ const LOGIN_DIALOG = 'LOGIN_DIALOG'
 const WATERFALL_DIALOG = 'WATERFALL_DIALOG'
 const TEXT_PROMPT = 'TEXT_PROMPT'
 
-const AUTH_URL = 'http://localhost:5000/api/auth/login'
+const AUTH_URL = "https://footprints-backend.azurewebsites.net/api/auth/login";
 
 class LoginDialog extends ComponentDialog {
     constructor() {
