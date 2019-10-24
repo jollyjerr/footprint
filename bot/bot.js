@@ -26,13 +26,13 @@ class Footprint extends BotHelper {
 
         this.onMembersAdded(async (context, next) => {
             console.log('A new member has been added! ☺️')
-            let tasks = MessageFactory.suggestedActions(['Login'])
+            // let tasks = MessageFactory.suggestedActions(['Login'])
             const membersAdded = context.activity.membersAdded;
             for (let cnt = 0; cnt < membersAdded.length; ++cnt) {
                 if (membersAdded[cnt].id !== context.activity.recipient.id) {
                     console.log('A new member has been added! ☺️')
                     await context.sendActivity("Ahoy! My name is footprint, and I am here to help you make sustainable decisions. We can chat here, or say 'Login' at any time to access your account!");
-                    await context.sendActivity(tasks)
+                    // await context.sendActivity(tasks) //removing due to buggy behavior
                 }
             }
             await next();
