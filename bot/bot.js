@@ -44,9 +44,8 @@ class Footprint extends BotHelper {
               waterfall = true
               await this.dialog.run(context, this.dialogState)
             } catch (err) {
-              console.log('error triggered??')
               await conversationState.clear(context);
-              console.log('Error handled --- exiting waterfall')
+              console.log('Escape Thrown! --- exiting waterfall')
               waterfall = false
               await context.sendActivity(err)
             }

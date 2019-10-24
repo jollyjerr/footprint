@@ -12,60 +12,106 @@ const TEXT_PROMPT = 'TEXT_PROMPT'
 let userInfo = {name: ''}
 
 class MainDialog extends ComponentDialog {
-    constructor(userState) {
-        super(MAIN_DIALOG)
-        this.userState = userState
-        this.userProfileAccessor = userState.createProperty(USER_PROFILE_PROPERTY)
+  constructor(userState) {
+    super(MAIN_DIALOG);
+    this.userState = userState;
+    this.userProfileAccessor = userState.createProperty(USER_PROFILE_PROPERTY);
 
-        this.addDialog(new LoginDialog())
-        this.addDialog(new RecycleDialog())
-        this.addDialog(new TextPrompt(TEXT_PROMPT))
+    this.addDialog(new LoginDialog());
+    this.addDialog(new RecycleDialog());
+    this.addDialog(new TextPrompt(TEXT_PROMPT));
 
-        this.addDialog(new WaterfallDialog(WATERFALL_DIALOG, [
-            this.clarifyLogin.bind(this),
-            this.secondStep.bind(this),
-            this.clarifyProblem.bind(this),
-            this.finalStep.bind(this)
-        ]));
+    this.addDialog(
+      new WaterfallDialog(WATERFALL_DIALOG, [
+        this.clarifyLogin.bind(this),
+        this.secondStep.bind(this),
+        this.clarifyProblem.bind(this),
+        this.finalStep.bind(this)
+      ])
+    );
 
-        this.initialDialogId = WATERFALL_DIALOG;
+    this.initialDialogId = WATERFALL_DIALOG;
+  }
+
+  async run(turnContext, accessor) {
+    const dialogSet = new DialogSet(accessor);
+    dialogSet.add(this);
+
+    const dialogContext = await dialogSet.createContext(turnContext);
+    const results = await dialogContext.continueDialog();
+    if (
+      results.status === undefined ||
+      results.status === DialogTurnStatus.empty
+    ) {
+      await dialogContext.beginDialog(this.id);
     }
+  }
 
-    async run(turnContext, accessor) {
-        const dialogSet = new DialogSet(accessor);
-        dialogSet.add(this);
+  async clarifyLogin(stepContext) {
+    return await stepContext.beginDialog(LOGIN_DIALOG);
+  }
 
-        const dialogContext = await dialogSet.createContext(turnContext);
-        const results = await dialogContext.continueDialog();
-        if (results.status === undefined || results.status === DialogTurnStatus.empty) {
-            await dialogContext.beginDialog(this.id);
+  async secondStep(stepContext) {
+    userInfo = stepContext.result; //store logged in user in global scope for future use
+    let promptOptions = { prompt: "Awesome! What do you want to talk about?" };
+    return await stepContext.prompt(TEXT_PROMPT, promptOptions);
+  }
+
+  async clarifyProblem(stepContext) {
+    switch (this.findInput(stepContext.result)) {
+      case "house":
+        return await stepContext.beginDialog(RECYCLE_DIALOG);
+      default:
+        return await stepContext.next();
+    }
+  }
+
+  async findInput(rawInput) {
+    let profileBuzz = ["profile", "all", "own", "user", "file"];
+    let vehicleBuzz = ["vehicle", "car", "vehicles", "cars", "trucks", "drive"];
+    let houseBuzz = ["house", "houses", "buildings", "live", "visit"];
+    if (this.hintsAt(profileBuzz, rawInput)) {
+      return "profile";
+    } else if (this.hintsAt(vehicleBuzz, rawInput)) {
+      return "vehicle";
+    } else if (this.hintsAt(houseBuzz, rawInput)) {
+      return "house";
+    } else {
+      return "default";
+    }
+  }
+
+  async finalStep(stepContext) {
+    await this.userProfileAccessor.set(stepContext.context, userInfo);
+    throw `Always love talking to ya, ${userInfo.name}!`;
+  }
+
+    hintsAt(array, string) {
+    if (array.some(word => {
+            return string.includes(word);
+        })
+        ) {
+        return true;
         }
+        return false;
     }
+    
+  findInput(rawInput) {
+    let profileBuzz = ["profile", "all", "own", "user", "file"];
+    let vehicleBuzz = ["vehicle", "car", "vehicles", "cars", "trucks", "drive"];
+    let houseBuzz = ["house", "houses", "buildings", "live", "visit"];
+    if (this.hintsAt(profileBuzz, rawInput)) {
+      return "profile";
+    } else if (this.hintsAt(vehicleBuzz, rawInput)) {
+      return "vehicle";
+    } else if (this.hintsAt(houseBuzz, rawInput)) {
+      return "house";
+    } else {
+      return "default";
+    }
+  }
 
-    async clarifyLogin(stepContext) {
-        return await stepContext.beginDialog(LOGIN_DIALOG);
-    }
-
-    async secondStep(stepContext) {
-        userInfo = stepContext.result //store logged in user in global scope for future use
-        console.log('logged In User', userInfo)
-        let promptOptions = { prompt: 'Awesome! What do you want to talk about?' }
-        return await stepContext.prompt(TEXT_PROMPT, promptOptions)
-    }
-
-    async clarifyProblem(stepContext) {
-        switch(stepContext.result){
-            case 'recycling':
-                return await stepContext.beginDialog(RECYCLE_DIALOG)
-            default:
-                return await stepContext.next()
-        }
-    }
-
-    async finalStep(stepContext) {
-        await this.userProfileAccessor.set(stepContext.context, userInfo);
-        throw `Always love talking to ya, ${userInfo.name}!`;
-    }
+  
 }
 
 module.exports.MainDialog = MainDialog;

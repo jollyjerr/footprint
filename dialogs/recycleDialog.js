@@ -19,6 +19,7 @@ class RecycleDialog extends ComponentDialog {
     }
 
     async confirmItem(stepContext) {
+        // console.log(userInfo)
         let promptOptions = { prompt: 'recycling is good' }
 
         return await stepContext.prompt(TEXT_PROMPT, promptOptions)
