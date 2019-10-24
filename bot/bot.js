@@ -47,7 +47,11 @@ class Footprint extends BotHelper {
               await conversationState.clear(context);
               console.log('Escape Thrown! --- exiting waterfall')
               waterfall = false
-              await context.sendActivity(err)
+              if(err){
+                await context.sendActivity(err)
+              } else {
+                await context.sendActivity('Sorry, I got a little mixed up there! Can we start over?')
+              }
             }
           } else {
             if (

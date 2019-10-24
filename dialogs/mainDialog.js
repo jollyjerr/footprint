@@ -81,21 +81,17 @@ class MainDialog extends ComponentDialog {
     }
   }
 
-  async finalStep(stepContext) {
-    await this.userProfileAccessor.set(stepContext.context, userInfo);
-    throw `Always love talking to ya, ${userInfo.name}!`;
+  hintsAt(array, string) {
+    if (
+      array.some(word => {
+        return string.includes(word);
+      })
+    ) {
+      return true;
+    }
+    return false;
   }
 
-    hintsAt(array, string) {
-    if (array.some(word => {
-            return string.includes(word);
-        })
-        ) {
-        return true;
-        }
-        return false;
-    }
-    
   findInput(rawInput) {
     let profileBuzz = ["profile", "all", "own", "user", "file"];
     let vehicleBuzz = ["vehicle", "car", "vehicles", "cars", "trucks", "drive"];
@@ -111,7 +107,10 @@ class MainDialog extends ComponentDialog {
     }
   }
 
-  
+  async finalStep(stepContext) {
+    await this.userProfileAccessor.set(stepContext.context, userInfo);
+    throw `Always love talking to ya, ${userInfo.name}!`;
+  }
 }
 
 module.exports.MainDialog = MainDialog;
